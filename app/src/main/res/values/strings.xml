@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">RxMapbox</string>
 
-    <string name="access_token"></string>
+    <string name="access_token">pk.eyJ1IjoiYmxlZWdlIiwiYSI6ImNpbXNnZWYyNzAxbDd2bG00bXl0cmNxOTQifQ.emtPXlCa9DKlmIis06vkBg</string>
 </resources>
