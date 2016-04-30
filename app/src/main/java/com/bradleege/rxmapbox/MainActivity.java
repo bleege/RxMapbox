@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMapReady(MapboxMap map) {
                 mapboxMap = map;
-                mapboxMap.setStyle(Style.MAPBOX_STREETS);
             }
         });
 
