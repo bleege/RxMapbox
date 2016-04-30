@@ -18,6 +18,14 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.services.commons.ServicesException;
+import com.mapbox.services.commons.models.Position;
+import com.mapbox.services.geocoding.v5.GeocodingCriteria;
+import com.mapbox.services.geocoding.v5.MapboxGeocoding;
+import com.mapbox.services.geocoding.v5.models.GeocodingResponse;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                     @Override
                     public void onMapLongClick(@NonNull LatLng point) {
-                        Log.i(TAG, "Map Long Clicked At: " + point);
+                        geocode(point);
                     }
                 });
             }
@@ -139,5 +147,29 @@ public class MainActivity extends AppCompatActivity {
             fab.setImageResource(R.drawable.ic_gps_fixed_24dp);
         }
         mapboxMap.setMyLocationEnabled(enabled);
+    }
+
+    private void geocode(LatLng point) {
+
+        try {
+            Position position = Position.fromCoordinates(point.getLongitude(), point.getLatitude(), point.getAltitude());
+
+            Observable<GeocodingResponse> geoObservable = new MapboxGeocoding.Builder()
+                                                        .setAccessToken(mapboxMap.getAccessToken())
+                                                        .setType(GeocodingCriteria.TYPE_ADDRESS)
+                                                        .setCoordinates(position)
+                                                        .build()
+                                                        .getObservable();
+
+            geoObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<GeocodingResponse>() {
+                @Override
+                public void call(GeocodingResponse geocodingResponse) {
+                    Log.i(TAG, "Geocoding Response = " + geocodingResponse);
+                }
+            });
+
+        } catch (ServicesException e) {
+            Log.e(TAG, "Error During Geocode: " + e);
+        }
     }
 }
